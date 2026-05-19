@@ -1,0 +1,8 @@
+{
+  "recommendations": [
+    "octref.vetur"
+  ],
+  "unwantedRecommendations": [
+    "Vue.volar"
+  ]
+}

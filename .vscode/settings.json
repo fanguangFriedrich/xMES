@@ -1,0 +1,49 @@
+{
+  "typescript.tsserver.maxTsServerMemory": 4096,
+  "typescript.disableAutomaticTypeAcquisition": true,
+  "typescript.tsserver.experimental.enableProjectDiagnostics": false,
+  "javascript.validate.enable": false,
+  "javascript.suggest.autoImports": false,
+  "typescript.suggest.autoImports": false,
+  "typescript.tsserver.watchOptions": {
+    "excludeDirectories": [
+      "**/node_modules",
+      "**/dist",
+      "**/bin",
+      "**/obj",
+      "**/.vs",
+      "**/public/ueditor",
+      "**/src/lib/vform"
+    ],
+    "excludeFiles": [
+      "**/*.min.js",
+      "**/*.map"
+    ]
+  },
+  "files.watcherExclude": {
+    "**/node_modules/**": true,
+    "**/dist/**": true,
+    "**/bin/**": true,
+    "**/obj/**": true,
+    "**/.vs/**": true,
+    "**/Vue2/public/ueditor/**": true,
+    "**/Vue2/src/lib/vform/**": true,
+    "**/*.map": true
+  },
+  "search.exclude": {
+    "**/node_modules": true,
+    "**/dist": true,
+    "**/bin": true,
+    "**/obj": true,
+    "**/.vs": true,
+    "**/Vue2/public/ueditor": true,
+    "**/Vue2/src/lib/vform": true
+  },
+  "files.exclude": {
+    "**/node_modules": true,
+    "**/dist": true,
+    "**/bin": true,
+    "**/obj": true,
+    "**/*.map": true
+  }
+}
