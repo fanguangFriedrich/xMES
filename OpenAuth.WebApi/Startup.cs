@@ -2,7 +2,6 @@
 using IdentityServer4.AccessTokenValidation;
 using Infrastructure;
 using Infrastructure.Extensions.AutofacManager;
-using Infrastructure.Helpers;
 using Infrastructure.Middleware;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.DataProtection;
@@ -16,14 +15,7 @@ using Microsoft.OpenApi.Models;
 using Newtonsoft.Json;
 using OpenAuth.App;
 using OpenAuth.App.DingTalk;
-<<<<<<< HEAD
-<<<<<<< HEAD
-=======
 using OpenAuth.App.TriColorLamp;
->>>>>>> remotes/master/v1.0
-=======
-using OpenAuth.App.TriColorLamp;
->>>>>>> remotes/master/v1.0
 using OpenAuth.App.HostedService;
 using OpenAuth.App.SyncTaskManager;
 using OpenAuth.Repository;
@@ -35,7 +27,6 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Reflection;
-using System.Threading.Tasks;
 
 namespace OpenAuth.WebApi
 {
@@ -164,14 +155,7 @@ namespace OpenAuth.WebApi
             services.AddDbContext<OpenAuthDBContext>();
 
             services.Configure<DingTalkOptions>(Configuration.GetSection(DingTalkOptions.SectionName));
-<<<<<<< HEAD
-<<<<<<< HEAD
-=======
             services.Configure<TriColorLampOptions>(Configuration.GetSection(TriColorLampOptions.SectionName));
->>>>>>> remotes/master/v1.0
-=======
-            services.Configure<TriColorLampOptions>(Configuration.GetSection(TriColorLampOptions.SectionName));
->>>>>>> remotes/master/v1.0
             services.AddSingleton<SyncTaskApp>();
             services.AddHttpClient();
 
@@ -179,11 +163,6 @@ namespace OpenAuth.WebApi
             {
                 client.Timeout = TimeSpan.FromMinutes(10); // 给足时间
             });
-<<<<<<< HEAD
-<<<<<<< HEAD
-=======
-=======
->>>>>>> remotes/master/v1.0
 
             services.AddHttpClient<TriColorLampApp>(client =>
             {
@@ -194,10 +173,6 @@ namespace OpenAuth.WebApi
                 }
                 client.Timeout = TimeSpan.FromMinutes(10);
             });
-<<<<<<< HEAD
->>>>>>> remotes/master/v1.0
-=======
->>>>>>> remotes/master/v1.0
             
 
             services.AddHttpClient<DingTalkLoginApp>();
@@ -385,12 +360,4 @@ namespace OpenAuth.WebApi
             return controlleractionlist;
         }
     }
-<<<<<<< HEAD
-<<<<<<< HEAD
 }
-=======
-}
->>>>>>> remotes/master/v1.0
-=======
-}
->>>>>>> remotes/master/v1.0

@@ -4,6 +4,7 @@ using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 using OpenAuth.App.TriColorLamp.Response;
 using System;
+using System.Collections.Generic;
 using System.Net.Http;
 using System.Text;
 using System.Threading.Tasks;
@@ -19,11 +20,10 @@ namespace OpenAuth.App.TriColorLamp
         private string _cachedAccessToken;
         private DateTime _accessTokenExpiry = DateTime.MinValue;
 
-<<<<<<< HEAD
-        private const string TokenApiUrl = "auth/token";
-=======
         private const string TokenApiPath = "auth/token";
->>>>>>> remotes/master/v1.0
+        private const string StateInfoApiPath = "triColorLamp/stateInfo";
+        private const string RankingApiPath = "triColorLamp/ranking";
+        private const string UserDtuSnsApiPath = "triColorLamp/userDtuSns";
         private const int TokenExpireSeconds = 2 * 60 * 60;
 
         public TriColorLampApp(
@@ -38,15 +38,13 @@ namespace OpenAuth.App.TriColorLamp
 
         public async Task<string> GetValidAccessTokenAsync()
         {
-            // 提前5分钟刷新，避免临界点过期
             if (_cachedAccessToken != null && DateTime.UtcNow < _accessTokenExpiry.AddMinutes(-5))
             {
                 return _cachedAccessToken;
             }
 
             (_cachedAccessToken, _accessTokenExpiry) = await GetAccessTokenAsync();
-
-            Console.WriteLine($"[TriColorLamp] AccessToken 已刷新，有效期至: {_accessTokenExpiry:yyyy-MM-dd HH:mm:ss} UTC");
+            _logger.LogInformation("[TriColorLamp] AccessToken refreshed, expires at {Expiry:u}", _accessTokenExpiry);
 
             return _cachedAccessToken;
         }
@@ -67,34 +65,55 @@ namespace OpenAuth.App.TriColorLamp
                 "application/json"
             );
 
-<<<<<<< HEAD
-            var response = await _httpClient.PostAsync(TokenApiUrl, content);
-=======
             var response = await _httpClient.PostAsync(BuildApiUrl(TokenApiPath), content);
->>>>>>> remotes/master/v1.0
             var resultJson = await response.Content.ReadAsStringAsync();
-            _logger.LogDebug("[TriColorLamp] Token 接口响应状态码: {StatusCode}", response.StatusCode);
+            _logger.LogDebug("[TriColorLamp] Token response status: {StatusCode}", response.StatusCode);
 
             if (!response.IsSuccessStatusCode)
-                throw new Exception($"获取三色灯 Token 失败 [{response.StatusCode}]: {resultJson}");
+                throw new Exception($"Get tri-color lamp token failed [{response.StatusCode}]: {resultJson}");
 
             var result = JsonHelper.Deserialize<TriColorLampTokenResponse>(resultJson)
-                ?? throw new Exception("解析三色灯 Token 响应失败");
+                ?? throw new Exception("Parse tri-color lamp token response failed");
 
             if (result.Code != 200)
-                throw new Exception($"获取三色灯 Token 失败 code={result.Code}: {result.Msg}");
+                throw new Exception($"Get tri-color lamp token failed code={result.Code}: {result.Msg}");
 
             var token = result.Data == null ? null : result.Data.Token;
             if (string.IsNullOrWhiteSpace(token))
-                throw new Exception($"响应中无 data.token 字段: {resultJson}");
+                throw new Exception($"Token response does not contain data.token: {resultJson}");
 
             return (token, DateTime.UtcNow.AddSeconds(TokenExpireSeconds));
+        }
+
+        public Task<TriColorLampStateInfoResponse> GetStateInfoAsync(string date)
+        {
+            if (string.IsNullOrWhiteSpace(date))
+                throw new ArgumentException("date cannot be empty", nameof(date));
+
+            var url = BuildApiUrl($"{StateInfoApiPath}?date={Uri.EscapeDataString(date)}");
+            return GetApiDataAsync<TriColorLampStateInfoResponse>(url, "Get tri-color lamp state info failed");
+        }
+
+        public Task<List<TriColorLampRankingResponse>> GetRankingAsync(int state, int ranking)
+        {
+            if (ranking <= 0)
+                throw new ArgumentException("ranking must be greater than 0", nameof(ranking));
+
+            var url = BuildApiUrl($"{RankingApiPath}?state={state}&ranking={ranking}");
+            return GetApiDataAsync<List<TriColorLampRankingResponse>>(url, "Get tri-color lamp ranking failed");
+        }
+
+        public Task<List<TriColorLampDeviceResponse>> GetUserDtuSnsAsync()
+        {
+            return GetApiDataAsync<List<TriColorLampDeviceResponse>>(
+                BuildApiUrl(UserDtuSnsApiPath),
+                "Get tri-color lamp device list failed");
         }
 
         public HttpRequestMessage CreateAuthorizedRequest(HttpMethod method, string requestUri)
         {
             if (string.IsNullOrWhiteSpace(requestUri))
-                throw new ArgumentException("请求地址不能为空", nameof(requestUri));
+                throw new ArgumentException("requestUri cannot be empty", nameof(requestUri));
 
             return new HttpRequestMessage(method, requestUri);
         }
@@ -109,19 +128,38 @@ namespace OpenAuth.App.TriColorLamp
             request.Headers.Add("Authorization", $"Bearer {token}");
         }
 
+        private async Task<T> GetApiDataAsync<T>(string url, string errorMessage)
+        {
+            using var request = CreateAuthorizedRequest(HttpMethod.Get, url);
+            await AddAuthorizationHeaderAsync(request);
+
+            var response = await _httpClient.SendAsync(request);
+            var resultJson = await response.Content.ReadAsStringAsync();
+            _logger.LogDebug("[TriColorLamp] GET {Url} response status: {StatusCode}", url, response.StatusCode);
+
+            if (!response.IsSuccessStatusCode)
+                throw new Exception($"{errorMessage} [{response.StatusCode}]: {resultJson}");
+
+            var result = JsonHelper.Deserialize<TriColorLampApiResponse<T>>(resultJson)
+                ?? throw new Exception($"{errorMessage}: parse response failed");
+
+            if (result.Code != 200)
+                throw new Exception($"{errorMessage} code={result.Code}: {result.Msg}");
+
+            return result.Data;
+        }
+
         private void ValidateOptions()
         {
             if (string.IsNullOrWhiteSpace(_options.BaseUrl))
-                throw new Exception("三色灯 BaseUrl 未配置");
+                throw new Exception("TriColorLamp BaseUrl is not configured");
 
             if (string.IsNullOrWhiteSpace(_options.Username))
-                throw new Exception("三色灯 Username 未配置");
+                throw new Exception("TriColorLamp Username is not configured");
 
             if (string.IsNullOrWhiteSpace(_options.Password))
-                throw new Exception("三色灯 Password 未配置");
+                throw new Exception("TriColorLamp Password is not configured");
         }
-<<<<<<< HEAD
-=======
 
         private string BuildApiUrl(string apiPath)
         {
@@ -133,6 +171,5 @@ namespace OpenAuth.App.TriColorLamp
 
             return new Uri(new Uri(baseUrl), apiPath).ToString();
         }
->>>>>>> remotes/master/v1.0
     }
 }
