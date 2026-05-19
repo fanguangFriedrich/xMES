@@ -1,0 +1,187 @@
+﻿using System;
+using System.Collections.Generic;
+using System.Threading.Tasks;
+using Infrastructure;
+using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
+using OpenAuth.App;
+using OpenAuth.App.Request;
+using OpenAuth.App.Response;
+using OpenAuth.Repository.Domain.DingTalk;
+
+namespace OpenAuth.WebApi.Controllers
+{
+    /// <summary>
+    /// 用户操作
+    /// </summary>
+    [Route("api/[controller]/[action]")]
+    [ApiController] 
+    [ApiExplorerSettings(GroupName = "用户管理_Users")]
+    public class UsersController : ControllerBase
+    {
+        private readonly UserManagerApp _app;
+
+        [HttpGet]
+        public Response<UserView> Get(string id)
+        {
+            var result = new Response<UserView>();
+            try
+            {
+                result.Data = _app.Get(id);
+            }
+            catch (Exception ex)
+            {
+                result.Code = 500;
+                result.Message = ex.InnerException?.Message ?? ex.Message;
+            }
+
+            return result;
+        }
+        
+        /// <summary>
+        /// 修改用户资料
+        /// </summary>
+        /// <param name="request"></param>
+        /// <returns></returns>
+        [HttpPost]
+        public Response ChangeProfile([FromBody] ChangeProfileReq request)
+        {
+            var result = new Response();
+            
+            try
+            {
+                _app.ChangeProfile(request);
+                result.Message = "修改成功，重新登录生效";
+            }
+            catch (Exception ex)
+            {
+                result.Code = 500;
+                result.Message = ex.InnerException?.Message ?? ex.Message;
+            }
+
+            return result;
+        }
+
+        /// <summary>
+        /// 修改密码
+        /// </summary>
+        /// <param name="request"></param>
+        /// <returns></returns>
+        [HttpPost]
+        public Response ChangePassword([FromBody] ChangePasswordReq request)
+        {
+            var result = new Response();
+            try
+            {
+                _app.ChangePassword(request);
+            }
+            catch (Exception ex)
+            {
+                result.Code = 500;
+                result.Message = ex.InnerException?.Message ?? ex.Message;
+            }
+
+            return result;
+        }
+
+        //添加或修改
+       [HttpPost]
+        public Response<string> AddOrUpdate([FromBody] UpdateUserReq obj)
+        {
+            var result = new Response<string>();
+            try
+            {
+                _app.AddOrUpdate(obj);
+                result.Data = obj.Id;   //返回ID
+            }
+            catch (Exception ex)
+            {
+                result.Code = 500;
+                result.Message = ex.InnerException?.Message ?? ex.Message;
+            }
+
+            return result;
+        }
+
+
+        /// <summary>
+        /// 加载列表
+        /// 获取当前登录用户可访问的一个部门及子部门全部用户
+        /// </summary>
+        [HttpGet]
+        public async Task<PagedListDataResp<UserView>> Load([FromQuery]QueryUserListReq request)
+        {
+            return await _app.Load(request);
+        }
+        
+        /// <summary>
+        /// 获取所有的用户
+        /// 为了控制权限，通常只用于流程实例选择执行角色，其他地方请使用Load
+        /// </summary>
+        [HttpGet]
+        public async Task<PagedListDataResp<UserView>> LoadAll([FromQuery]QueryUserListReq request)
+        {
+            return await _app.LoadAll(request);
+        }
+
+       [HttpPost]
+        public Response Delete([FromBody]string[] ids)
+        {
+            var result = new Response();
+            try
+            {
+                _app.Delete(ids);
+
+            }
+            catch (Exception ex)
+            {
+                result.Code = 500;
+                result.Message = ex.InnerException?.Message ?? ex.Message;
+            }
+
+            return result;
+        }
+
+        [HttpPost]
+        public Response LoadByIds([FromBody]string[] ids)
+        {
+            var result = new Response<List<UserView>>();
+            try
+            {
+                result.Data = _app.LoadByIds(ids);
+
+            }
+            catch (Exception ex)
+            {
+                result.Code = 500;
+                result.Message = ex.InnerException?.Message ?? ex.Message;
+            }
+
+            return result;
+        }
+
+        /// <summary>
+        /// 加载指定角色的用户
+        /// </summary>
+        [HttpGet]
+        public async Task<PagedDynamicDataResp> LoadByRole([FromQuery]QueryUserListByRoleReq request)
+        {
+            return await _app.LoadByRole(request);
+        }
+
+        /// <summary>
+        /// 加载指定部门的用户
+        /// 不包含下级部门的用户
+        /// </summary>
+        [HttpGet]
+        public async Task<PagedDynamicDataResp> LoadByOrg([FromQuery]QueryUserListByOrgReq request)
+        {
+            return await _app.LoadByOrg(request);
+        }
+        
+        public UsersController(UserManagerApp app) 
+        {
+            _app = app;
+        }
+    }
+}

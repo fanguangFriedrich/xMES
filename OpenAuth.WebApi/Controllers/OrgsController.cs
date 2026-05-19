@@ -1,0 +1,144 @@
+﻿using System;
+using Infrastructure;
+using Microsoft.AspNetCore.Mvc;
+using OpenAuth.App;
+using OpenAuth.App.Response;
+using OpenAuth.Repository.Domain;
+using System.Collections.Generic;
+
+namespace OpenAuth.WebApi.Controllers
+{
+    /// <summary>
+    /// 机构操作
+    /// </summary>
+    [Route("api/[controller]/[action]")]
+    [ApiController]
+    [ApiExplorerSettings(GroupName = "组织机构_Orgs")]
+    public class OrgsController : ControllerBase
+    {
+        private readonly OrgManagerApp _app;
+
+        /// <summary>
+        /// 获取机构详情
+        /// </summary>
+        [HttpGet]
+        public Response<SysOrg> Get(string id)
+        {
+            var result = new Response<SysOrg>();
+            try
+            {
+                result.Data = _app.Get(id);
+            }
+            catch (Exception ex)
+            {
+                result.Code = 500;
+                result.Message = ex.InnerException?.Message ?? ex.Message;
+            }
+
+            return result;
+        }
+
+        /// <summary>
+        /// 新增机构
+        /// <para>如果ID为空，会自动创建ID；会自动为当前登录用户分配添加的机构</para>
+        /// </summary>
+        /// <param name="obj"></param>
+        /// <returns></returns>
+        [HttpPost]
+        public Response<SysOrg> Add([FromBody] SysOrg obj)
+        {
+            var result = new Response<SysOrg>();
+            try
+            {
+                _app.Add(obj);
+                result.Data = obj;
+            }
+            catch (Exception ex)
+            {
+                result.Code = 500;
+                result.Message = ex.InnerException?.Message ?? ex.Message;
+            }
+
+            return result;
+        }
+
+        //添加或修改
+        [HttpPost]
+        public Response Update([FromBody] SysOrg obj)
+        {
+            var result = new Response();
+            try
+            {
+                _app.Update(obj);
+
+            }
+            catch (Exception ex)
+            {
+                result.Code = 500;
+                result.Message = ex.InnerException?.Message ?? ex.Message;
+            }
+
+            return result;
+        }
+
+        /// <summary>
+        /// 获取所有机构
+        /// </summary>
+        [HttpGet]
+        public Response<List<OrgView>> LoadAll()
+        {
+            var result = new Response<List<OrgView>>();
+            try
+            {
+                result.Data = _app.LoadAll();
+            }
+            catch (CommonException ex)
+            {
+                if (ex.Code == Define.INVALID_TOKEN)
+                {
+                    result.Code = ex.Code;
+                    result.Message = ex.Message;
+                }
+                else
+                {
+                    result.Code = 500;
+                    result.Message = ex.InnerException != null
+                        ? "OpenAuth.WebAPI数据库访问失败:" + ex.InnerException.Message
+                        : "OpenAuth.WebAPI数据库访问失败:" + ex.Message;
+                }
+
+            }
+
+            return result;
+        }
+
+
+        /// <summary>
+        /// 删除选中的部门及所有的子部门
+        /// </summary>
+        /// <param name="ids"></param>
+        /// <returns></returns>
+        [HttpPost]
+        public Response Delete([FromBody]string[] ids)
+        {
+            var result = new Response();
+            try
+            {
+                _app.DelOrgCascade(ids);
+
+            }
+            catch (Exception ex)
+            {
+                result.Code = 500;
+                result.Message = ex.InnerException?.Message ?? ex.Message;
+            }
+
+            return result;
+        }
+
+        public OrgsController(OrgManagerApp app) 
+        {
+            _app = app;
+        }
+    }
+}
