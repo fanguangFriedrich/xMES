@@ -16,6 +16,10 @@ using Microsoft.OpenApi.Models;
 using Newtonsoft.Json;
 using OpenAuth.App;
 using OpenAuth.App.DingTalk;
+<<<<<<< HEAD
+=======
+using OpenAuth.App.TriColorLamp;
+>>>>>>> remotes/master/v1.0
 using OpenAuth.App.HostedService;
 using OpenAuth.App.SyncTaskManager;
 using OpenAuth.Repository;
@@ -156,6 +160,10 @@ namespace OpenAuth.WebApi
             services.AddDbContext<OpenAuthDBContext>();
 
             services.Configure<DingTalkOptions>(Configuration.GetSection(DingTalkOptions.SectionName));
+<<<<<<< HEAD
+=======
+            services.Configure<TriColorLampOptions>(Configuration.GetSection(TriColorLampOptions.SectionName));
+>>>>>>> remotes/master/v1.0
             services.AddSingleton<SyncTaskApp>();
             services.AddHttpClient();
 
@@ -163,6 +171,19 @@ namespace OpenAuth.WebApi
             {
                 client.Timeout = TimeSpan.FromMinutes(10); // 给足时间
             });
+<<<<<<< HEAD
+=======
+
+            services.AddHttpClient<TriColorLampApp>(client =>
+            {
+                var baseUrl = Configuration[$"{TriColorLampOptions.SectionName}:BaseUrl"];
+                if (!string.IsNullOrWhiteSpace(baseUrl))
+                {
+                    client.BaseAddress = new Uri(baseUrl.EndsWith("/") ? baseUrl : $"{baseUrl}/");
+                }
+                client.Timeout = TimeSpan.FromMinutes(10);
+            });
+>>>>>>> remotes/master/v1.0
             
 
             services.AddHttpClient<DingTalkLoginApp>();
@@ -350,4 +371,8 @@ namespace OpenAuth.WebApi
             return controlleractionlist;
         }
     }
+<<<<<<< HEAD
 }
+=======
+}
+>>>>>>> remotes/master/v1.0
