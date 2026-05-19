@@ -17,6 +17,10 @@ using Newtonsoft.Json;
 using OpenAuth.App;
 using OpenAuth.App.DingTalk;
 <<<<<<< HEAD
+<<<<<<< HEAD
+=======
+using OpenAuth.App.TriColorLamp;
+>>>>>>> remotes/master/v1.0
 =======
 using OpenAuth.App.TriColorLamp;
 >>>>>>> remotes/master/v1.0
@@ -161,6 +165,10 @@ namespace OpenAuth.WebApi
 
             services.Configure<DingTalkOptions>(Configuration.GetSection(DingTalkOptions.SectionName));
 <<<<<<< HEAD
+<<<<<<< HEAD
+=======
+            services.Configure<TriColorLampOptions>(Configuration.GetSection(TriColorLampOptions.SectionName));
+>>>>>>> remotes/master/v1.0
 =======
             services.Configure<TriColorLampOptions>(Configuration.GetSection(TriColorLampOptions.SectionName));
 >>>>>>> remotes/master/v1.0
@@ -172,7 +180,10 @@ namespace OpenAuth.WebApi
                 client.Timeout = TimeSpan.FromMinutes(10); // 给足时间
             });
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> remotes/master/v1.0
 
             services.AddHttpClient<TriColorLampApp>(client =>
             {
@@ -183,6 +194,9 @@ namespace OpenAuth.WebApi
                 }
                 client.Timeout = TimeSpan.FromMinutes(10);
             });
+<<<<<<< HEAD
+>>>>>>> remotes/master/v1.0
+=======
 >>>>>>> remotes/master/v1.0
             
 
@@ -372,7 +386,11 @@ namespace OpenAuth.WebApi
         }
     }
 <<<<<<< HEAD
+<<<<<<< HEAD
 }
+=======
+}
+>>>>>>> remotes/master/v1.0
 =======
 }
 >>>>>>> remotes/master/v1.0

@@ -19,7 +19,11 @@ namespace OpenAuth.App.TriColorLamp
         private string _cachedAccessToken;
         private DateTime _accessTokenExpiry = DateTime.MinValue;
 
+<<<<<<< HEAD
         private const string TokenApiUrl = "auth/token";
+=======
+        private const string TokenApiPath = "auth/token";
+>>>>>>> remotes/master/v1.0
         private const int TokenExpireSeconds = 2 * 60 * 60;
 
         public TriColorLampApp(
@@ -63,7 +67,11 @@ namespace OpenAuth.App.TriColorLamp
                 "application/json"
             );
 
+<<<<<<< HEAD
             var response = await _httpClient.PostAsync(TokenApiUrl, content);
+=======
+            var response = await _httpClient.PostAsync(BuildApiUrl(TokenApiPath), content);
+>>>>>>> remotes/master/v1.0
             var resultJson = await response.Content.ReadAsStringAsync();
             _logger.LogDebug("[TriColorLamp] Token 接口响应状态码: {StatusCode}", response.StatusCode);
 
@@ -112,5 +120,19 @@ namespace OpenAuth.App.TriColorLamp
             if (string.IsNullOrWhiteSpace(_options.Password))
                 throw new Exception("三色灯 Password 未配置");
         }
+<<<<<<< HEAD
+=======
+
+        private string BuildApiUrl(string apiPath)
+        {
+            ValidateOptions();
+
+            var baseUrl = _options.BaseUrl.EndsWith("/")
+                ? _options.BaseUrl
+                : $"{_options.BaseUrl}/";
+
+            return new Uri(new Uri(baseUrl), apiPath).ToString();
+        }
+>>>>>>> remotes/master/v1.0
     }
 }
