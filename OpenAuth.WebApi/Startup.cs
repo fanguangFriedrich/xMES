@@ -16,6 +16,7 @@ using Microsoft.OpenApi.Models;
 using Newtonsoft.Json;
 using OpenAuth.App;
 using OpenAuth.App.DingTalk;
+using OpenAuth.App.TriColorLamp;
 using OpenAuth.App.HostedService;
 using OpenAuth.App.SyncTaskManager;
 using OpenAuth.Repository;
@@ -156,12 +157,23 @@ namespace OpenAuth.WebApi
             services.AddDbContext<OpenAuthDBContext>();
 
             services.Configure<DingTalkOptions>(Configuration.GetSection(DingTalkOptions.SectionName));
+            services.Configure<TriColorLampOptions>(Configuration.GetSection(TriColorLampOptions.SectionName));
             services.AddSingleton<SyncTaskApp>();
             services.AddHttpClient();
 
             services.AddHttpClient<DingTalkApp>(client =>
             {
                 client.Timeout = TimeSpan.FromMinutes(10); // 给足时间
+            });
+
+            services.AddHttpClient<TriColorLampApp>(client =>
+            {
+                var baseUrl = Configuration[$"{TriColorLampOptions.SectionName}:BaseUrl"];
+                if (!string.IsNullOrWhiteSpace(baseUrl))
+                {
+                    client.BaseAddress = new Uri(baseUrl.EndsWith("/") ? baseUrl : $"{baseUrl}/");
+                }
+                client.Timeout = TimeSpan.FromMinutes(10);
             });
             
 
