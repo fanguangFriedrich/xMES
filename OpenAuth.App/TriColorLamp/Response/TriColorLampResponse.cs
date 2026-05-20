@@ -1,5 +1,6 @@
 using System.Text.Json.Serialization;
 using System.Collections.Generic;
+using System;
 
 namespace OpenAuth.App.TriColorLamp.Response
 {
@@ -265,5 +266,15 @@ namespace OpenAuth.App.TriColorLamp.Response
 
         [JsonPropertyName("msg")]
         public string Msg { get; set; }
+    }
+
+    public class TriColorLampRealtimeSnapshotResponse
+    {
+        public DateTime CachedAt { get; set; }
+        public List<TriColorLampDeviceResponse> Devices { get; set; } = new List<TriColorLampDeviceResponse>();
+        public List<List<TriColorLampCurrentStateResponse>> States { get; set; } = new List<List<TriColorLampCurrentStateResponse>>();
+        public List<TriColorLampRateResponse> Rates { get; set; } = new List<TriColorLampRateResponse>();
+        public List<TriColorLampStateCountResponse> StateCounts { get; set; } = new List<TriColorLampStateCountResponse>();
+        public List<TriColorLampCounterLatestResponse> Counters { get; set; } = new List<TriColorLampCounterLatestResponse>();
     }
 }

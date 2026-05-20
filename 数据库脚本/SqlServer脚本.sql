@@ -3734,6 +3734,7 @@ GO
 -- Records of OpenJob
 -- ----------------------------
 INSERT INTO [dbo].[OpenJob] ([Id], [JobName], [RunCount], [ErrorCount], [NextRunTime], [LastRunTime], [LastErrorTime], [JobType], [JobCall], [JobCallParams], [Cron], [Status], [Remark], [CreateTime], [CreateUserId], [CreateUserName], [UpdateTime], [UpdateUserId], [UpdateUserName], [OrgId]) VALUES (N'f40fe48d-71a4-4f47-b324-6178d97abfb9', N'定时日志任务', N'0', N'0', N'2024-04-25 12:16:20.000', N'2024-04-25 12:16:20.000', N'2024-04-25 12:16:20.000', N'0', N'OpenAuth.App.Jobs.SysLogJob', N'null', N'0/10 * * * * ?', N'0', N'这是个每10秒运行一次的任务，可以在系统日志中查看运行结果', N'2024-04-25 12:16:20.000', N'00000000-0000-0000-0000-000000000000', N'超级管理员', N'2024-04-25 19:31:38.000', N'00000000-0000-0000-0000-000000000000', N'超级管理员', N'')
+INSERT INTO [dbo].[OpenJob] ([Id], [JobName], [RunCount], [ErrorCount], [NextRunTime], [LastRunTime], [LastErrorTime], [JobType], [JobCall], [JobCallParams], [Cron], [Status], [Remark], [CreateTime], [CreateUserId], [CreateUserName], [UpdateTime], [UpdateUserId], [UpdateUserName], [OrgId]) VALUES (N'tricolor-lamp-realtime-sync', N'三色灯状态定时获取', N'0', N'0', GETDATE(), GETDATE(), GETDATE(), N'0', N'OpenAuth.App.Jobs.TriColorLampSyncJob', N'null', N'0/15 * * * * ?', N'1', N'每15秒获取一次三色灯状态、稼动率、计数和灯次数数据，供智能灯页面实时展示；设备较少时可改为0/8 * * * * ?。', GETDATE(), N'00000000-0000-0000-0000-000000000000', N'超级管理员', GETDATE(), N'00000000-0000-0000-0000-000000000000', N'超级管理员', N'')
 GO
 
 

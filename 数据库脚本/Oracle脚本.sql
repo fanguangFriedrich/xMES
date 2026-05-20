@@ -1388,6 +1388,7 @@ COMMENT ON TABLE "OPENJOB" IS '定时任务';
 -- Records of OPENJOB
 -- ----------------------------
 INSERT INTO "OPENJOB" VALUES ('f40fe48d-71a4-4f47-b324-6178d97abfb9', '定时日志任务', '0', '0', TO_DATE('2024-04-25 12:16:20', 'SYYYY-MM-DD HH24:MI:SS'), TO_DATE('2024-04-25 12:16:20', 'SYYYY-MM-DD HH24:MI:SS'), TO_DATE('2024-04-25 12:16:20', 'SYYYY-MM-DD HH24:MI:SS'), '0', 'OpenAuth.App.Jobs.SysLogJob', 'null', '0/10 * * * * ?', '0', '这是个每10秒运行一次的任务，可以在系统日志中查看运行结果', TO_DATE('2024-04-25 12:16:20', 'SYYYY-MM-DD HH24:MI:SS'), '00000000-0000-0000-0000-000000000000', '超级管理员', TO_DATE('2024-04-25 19:31:38', 'SYYYY-MM-DD HH24:MI:SS'), '00000000-0000-0000-0000-000000000000', '超级管理员', NULL);
+INSERT INTO "OPENJOB" VALUES ('tricolor-lamp-realtime-sync', '三色灯状态定时获取', '0', '0', SYSDATE, SYSDATE, SYSDATE, '0', 'OpenAuth.App.Jobs.TriColorLampSyncJob', 'null', '0/15 * * * * ?', '1', '每15秒获取一次三色灯状态、稼动率、计数和灯次数数据，供智能灯页面实时展示；设备较少时可改为0/8 * * * * ?。', SYSDATE, '00000000-0000-0000-0000-000000000000', '超级管理员', SYSDATE, '00000000-0000-0000-0000-000000000000', '超级管理员', NULL);
 
 -- ----------------------------
 -- Table structure for ORG

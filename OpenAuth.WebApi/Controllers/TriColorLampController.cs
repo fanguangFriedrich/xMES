@@ -109,6 +109,33 @@ namespace OpenAuth.WebApi.Controllers
         /// <summary>
         /// 根据组织名称获取灯设备列表
         /// </summary>
+        /// <summary>
+        /// 获取三色灯实时快照。优先返回定时任务缓存，无缓存时同步获取一次。
+        /// </summary>
+        [HttpGet]
+        [AllowAnonymous]
+        public async Task<Response<TriColorLampRealtimeSnapshotResponse>> GetRealtimeSnapshot([FromQuery] string date = null)
+        {
+            var result = new Response<TriColorLampRealtimeSnapshotResponse>();
+            try
+            {
+                var snapshot = TriColorLampRealtimeCache.Snapshot;
+                if (snapshot == null || (DateTime.Now - snapshot.CachedAt).TotalSeconds > 120)
+                {
+                    snapshot = await _app.GetRealtimeSnapshotAsync(date);
+                    TriColorLampRealtimeCache.Set(snapshot);
+                }
+
+                result.Data = snapshot;
+            }
+            catch (Exception ex)
+            {
+                result.Code = 500;
+                result.Message = ex.Message;
+            }
+            return result;
+        }
+
         [HttpGet]
         [AllowAnonymous]
         public async Task<Response<List<TriColorLampDeviceResponse>>> GetUserGroupDtuSns([FromQuery] string groupName)

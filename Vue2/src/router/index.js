@@ -314,6 +314,16 @@ export const constantRouterMap = [
         component: () => import('@/views/usermanager/profile'),
       },
       {
+        path: '/tricolorlamp',
+        name: 'tricolorlamp',
+        meta: {
+          title: '智能灯',
+          icon: 'shebei',
+          sortNo: 0,
+        },
+        component: () => import('@/views/tricolorlamp/index'),
+      },
+      {
         // path: '/iframePage/:url/:name',
         path: '/iframePage/:code',
         name: 'iframePage',

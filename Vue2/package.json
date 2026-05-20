@@ -4,9 +4,9 @@
   "description": "OpenAuth.Pro--最好用的权限工作流框架",
   "author": "yubaolee <yubaolee@163.com> | xufuxing <954478625@qq.com>",
   "scripts": {
-    "serve": "set NODE_OPTIONS=--openssl-legacy-provider &&vue-cli-service serve  --mode dev",
-    "dev": "set NODE_OPTIONS=--openssl-legacy-provider &&vue-cli-service serve --mode dev",
-    "build": "set NODE_OPTIONS=--openssl-legacy-provider &&vue-cli-service build --mode prod",
+    "serve": "node --openssl-legacy-provider --max-old-space-size=8192 ./node_modules/@vue/cli-service/bin/vue-cli-service.js serve --mode dev",
+    "dev": "node --openssl-legacy-provider --max-old-space-size=8192 ./node_modules/@vue/cli-service/bin/vue-cli-service.js serve --mode dev",
+    "build": "node --openssl-legacy-provider --max-old-space-size=8192 ./node_modules/@vue/cli-service/bin/vue-cli-service.js build --mode prod",
     "lint": "vue-cli-service lint"
   },
   "dependencies": {

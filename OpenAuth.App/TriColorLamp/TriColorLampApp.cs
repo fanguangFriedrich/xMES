@@ -6,6 +6,7 @@ using OpenAuth.App.TriColorLamp.Response;
 using System;
 using System.Collections.Generic;
 using System.IO;
+using System.Linq;
 using System.Net.Http;
 using System.Text;
 using System.Threading;
@@ -276,7 +277,7 @@ namespace OpenAuth.App.TriColorLamp
 
             return SendApiAsync(BuildApiUrl(SendBlueLightCmdApiPath), HttpMethod.Put, body, "Send tri-color lamp blue light command failed");
         }
-
+            
         public Task<List<TriColorLampCounterLatestResponse>> GetDtuSnCounterAsync(string dtuSn)
         {
             if (string.IsNullOrWhiteSpace(dtuSn))
@@ -350,6 +351,34 @@ namespace OpenAuth.App.TriColorLamp
 
             var url = BuildApiUrl(BuildQuery(DtuSnDayHistoryDataApiPath, ("dtuSn", dtuSn), ("startDate", startDate), ("endDate", endDate)));
             return GetApiDataAsync<List<TriColorLampCounterDayHistoryResponse>>(url, "Get tri-color lamp counter day history data failed");
+        }
+
+        public async Task<TriColorLampRealtimeSnapshotResponse> GetRealtimeSnapshotAsync(string date = null)
+        {
+            var devices = await GetUserDtuSnsAsync();
+            var dtuSns = string.Join(",", devices.Select(item => item.DtuSn).Where(item => !string.IsNullOrWhiteSpace(item)));
+            var snapshot = new TriColorLampRealtimeSnapshotResponse
+            {
+                CachedAt = DateTime.Now,
+                Devices = devices
+            };
+
+            if (string.IsNullOrWhiteSpace(dtuSns))
+                return snapshot;
+
+            var targetDate = string.IsNullOrWhiteSpace(date) ? DateTime.Now.ToString("yyyy-MM-dd") : date;
+            var stateTask = GetDtuSnStateListAsync(dtuSns);
+            var rateTask = GetDtuSnListRateOfActionAsync(targetDate, dtuSns);
+            var stateCountTask = GetDtuSnListStateCountAsync(dtuSns);
+            var counterTask = GetDtuSnListCounterAsync(dtuSns);
+
+            await Task.WhenAll(stateTask, rateTask, stateCountTask, counterTask);
+
+            snapshot.States = stateTask.Result;
+            snapshot.Rates = rateTask.Result;
+            snapshot.StateCounts = stateCountTask.Result;
+            snapshot.Counters = counterTask.Result;
+            return snapshot;
         }
 
         public HttpRequestMessage CreateAuthorizedRequest(HttpMethod method, string requestUri)
