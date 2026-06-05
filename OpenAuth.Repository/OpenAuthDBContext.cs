@@ -162,6 +162,10 @@ namespace OpenAuth.Repository
         public virtual DbSet<WmsInboundOrderDtbl> WmsInboundOrderDtbls { get; set; }
         public virtual DbSet<WmsInboundOrderTbl> WmsInboundOrderTbls { get; set; }
         public virtual DbSet<OpenJob> OpenJobs { get; set; }
+        public virtual DbSet<TriColorLampLatestState> TriColorLampLatestStates { get; set; }
+        public virtual DbSet<TriColorLampDevice> TriColorLampDevices { get; set; }
+        public virtual DbSet<TriColorLampDailyLampData> TriColorLampDailyLampDatas { get; set; }
+        public virtual DbSet<TriColorLampDailyAvailability> TriColorLampDailyAvailabilities { get; set; }
         public virtual DbSet<BuilderTable> BuilderTables { get; set; }
 
         public virtual DbSet<BuilderTableColumn> BuilderTableColumns { get; set; }

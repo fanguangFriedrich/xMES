@@ -107,6 +107,26 @@ namespace OpenAuth.WebApi.Controllers
         }
 
         /// <summary>
+        /// 从数据库获取用户灯设备列表
+        /// </summary>
+        [HttpGet]
+        [AllowAnonymous]
+        public async Task<Response<List<TriColorLampDeviceResponse>>> GetUserDtuSnsFromDb()
+        {
+            var result = new Response<List<TriColorLampDeviceResponse>>();
+            try
+            {
+                result.Data = await _app.GetUserDtuSnsFromDbAsync();
+            }
+            catch (Exception ex)
+            {
+                result.Code = 500;
+                result.Message = ex.Message;
+            }
+            return result;
+        }
+
+        /// <summary>
         /// 根据组织名称获取灯设备列表
         /// </summary>
         /// <summary>
@@ -198,6 +218,71 @@ namespace OpenAuth.WebApi.Controllers
         }
 
         /// <summary>
+        /// 从数据库根据 dtuSnList 和日期获取灯数据；无选定日数据时回源获取
+        /// </summary>
+        [HttpGet]
+        [AllowAnonymous]
+        public async Task<Response<List<TriColorLampDataResponse>>> GetDtuSnListDataFromDb(
+            [FromQuery] string dtuSns,
+            [FromQuery] string date = null)
+        {
+            var result = new Response<List<TriColorLampDataResponse>>();
+            try
+            {
+                result.Data = await _app.GetDtuSnListDataFromDbAsync(dtuSns, date);
+            }
+            catch (Exception ex)
+            {
+                result.Code = 500;
+                result.Message = ex.Message;
+            }
+            return result;
+        }
+
+        /// <summary>
+        /// 获取指定日期和设备的工作时间、保养时间和稼动率
+        /// </summary>
+        [HttpGet]
+        [AllowAnonymous]
+        public async Task<Response<TriColorLampDailyAvailabilityResponse>> GetDailyAvailabilitySetting(
+            [FromQuery] string date,
+            [FromQuery] string dtuSn)
+        {
+            var result = new Response<TriColorLampDailyAvailabilityResponse>();
+            try
+            {
+                result.Data = await _app.GetDailyAvailabilitySettingAsync(date, dtuSn);
+            }
+            catch (Exception ex)
+            {
+                result.Code = 500;
+                result.Message = ex.Message;
+            }
+            return result;
+        }
+
+        /// <summary>
+        /// 修改指定日期和设备的工作时间、保养时间，并重新计算稼动率
+        /// </summary>
+        [HttpPost]
+        [AllowAnonymous]
+        public async Task<Response<TriColorLampDailyAvailabilityResponse>> UpdateDailyAvailabilitySetting(
+            [FromBody] TriColorLampDailyAvailabilitySettingRequest request)
+        {
+            var result = new Response<TriColorLampDailyAvailabilityResponse>();
+            try
+            {
+                result.Data = await _app.UpdateDailyAvailabilitySettingAsync(request);
+            }
+            catch (Exception ex)
+            {
+                result.Code = 500;
+                result.Message = ex.Message;
+            }
+            return result;
+        }
+
+        /// <summary>
         /// 根据 dtuSn 获取灯状态
         /// </summary>
         [HttpGet]
@@ -228,6 +313,26 @@ namespace OpenAuth.WebApi.Controllers
             try
             {
                 result.Data = await _app.GetDtuSnStateListAsync(dtuSns);
+            }
+            catch (Exception ex)
+            {
+                result.Code = 500;
+                result.Message = ex.Message;
+            }
+            return result;
+        }
+
+        /// <summary>
+        /// 从数据库获取每个设备最新灯状态
+        /// </summary>
+        [HttpGet]
+        [AllowAnonymous]
+        public async Task<Response<List<List<TriColorLampCurrentStateResponse>>>> GetDtuSnStateListFromDb([FromQuery] string dtuSns)
+        {
+            var result = new Response<List<List<TriColorLampCurrentStateResponse>>>();
+            try
+            {
+                result.Data = await _app.GetDtuSnStateListFromDbAsync(dtuSns);
             }
             catch (Exception ex)
             {

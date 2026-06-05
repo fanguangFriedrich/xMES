@@ -119,6 +119,9 @@ namespace OpenAuth.App.TriColorLamp.Response
 
         [JsonPropertyName("startTime")]
         public string StartTime { get; set; }
+
+        [JsonPropertyName("availabilityRate")]
+        public decimal? AvailabilityRate { get; set; }
     }
 
     public class TriColorLampRateResponse
@@ -276,5 +279,37 @@ namespace OpenAuth.App.TriColorLamp.Response
         public List<TriColorLampRateResponse> Rates { get; set; } = new List<TriColorLampRateResponse>();
         public List<TriColorLampStateCountResponse> StateCounts { get; set; } = new List<TriColorLampStateCountResponse>();
         public List<TriColorLampCounterLatestResponse> Counters { get; set; } = new List<TriColorLampCounterLatestResponse>();
+    }
+
+    public class TriColorLampDailyAvailabilityResponse
+    {
+        public string DataDate { get; set; }
+        public string DtuSn { get; set; }
+        public string DeviceName { get; set; }
+        public string WorkStartTime { get; set; }
+        public string WorkEndTime { get; set; }
+        public string MaintenanceStartTime { get; set; }
+        public string MaintenanceEndTime { get; set; }
+        public long WorkDuration { get; set; }
+        public long MaintenanceOverlapDuration { get; set; }
+        public long AvailableWorkDuration { get; set; }
+        public long RedDuration { get; set; }
+        public long YellowDuration { get; set; }
+        public long GreenDuration { get; set; }
+        public long BlueDuration { get; set; }
+        public long OffDuration { get; set; }
+        public long OtherDuration { get; set; }
+        public decimal AvailabilityRate { get; set; }
+        public string UpdateTime { get; set; }
+    }
+
+    public class TriColorLampDailyAvailabilitySettingRequest
+    {
+        public string Date { get; set; }
+        public string DtuSn { get; set; }
+        public string WorkStartTime { get; set; }
+        public string WorkEndTime { get; set; }
+        public string MaintenanceStartTime { get; set; }
+        public string MaintenanceEndTime { get; set; }
     }
 }
